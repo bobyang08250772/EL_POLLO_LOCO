@@ -3,6 +3,9 @@ let world;
 let kb;
 let gameIsPaused = false;
 let assertIsLoaded = false;
+let gameTimerIntervalId;
+let gameTimer = GAME_TIME;
+let bgMusicAudio;
 const intervalIDs = [];
 const allAudios = [];
 
@@ -47,6 +50,7 @@ function pauseGame(){
 
 function stopGame(isWon) {
     intervalIDs.forEach(clearInterval);
+    bgMusicAudio.pause();
     document.getElementById("canvas-overlay").style.display = "block";
 
     if (!isWon) {
@@ -94,17 +98,49 @@ function startLoading() {
 }
 
 
+function startGameTimer() {
+    setStoppableInterval(() => {
+        if (gameIsPaused || gameTimer <= 0) return;
+        gameTimer --;
+        gameTimerDiv.innerText = gameTimer;
+        if(gameTimer <= 10) {
+            gameTimerDiv.style.color = TIMER_URGENT;
+            bgMusicAudio.playbackRate = 2;
+        } else if(gameTimer <= 30) {
+            gameTimerDiv.style.color = TIMER_WARNING;
+            bgMusicAudio.playbackRate = 1.5;
+        } else {
+            gameTimerDiv.style.color = TIMER_NOMRAL;
+        }
+    }, 1000);
+}
+
+
+function initGameTimer() {
+    gameTimer = GAME_TIME;
+    gameTimerDiv.innerText = GAME_TIME;
+    gameTimerDiv.style.color = TIMER_NOMRAL;
+    startGameTimer();
+}
+
+
 function startGame() { 
     gameIsStarted = true;
-    
-
-    ASSERTS["audios"][AUDIO_BG_MUSIC].loop = true;
-    ASSERTS["audios"][AUDIO_BG_MUSIC].currenTime = 0;
-    ASSERTS["audios"][AUDIO_BG_MUSIC].play();
+    gameIsPaused = false;
     
     initGameElements();
     initLevel();
     initCanvasAndKeyBoard();
+    initGameTimer();
+    initBgMusic();
+}
+
+function initBgMusic() {
+    bgMusicAudio = ASSERTS["audios"][AUDIO_BG_MUSIC];
+    bgMusicAudio.playbackRate = 0.8;
+    bgMusicAudio.loop = true;
+    bgMusicAudio.currenTime = 0;
+    bgMusicAudio.play();
 }
 
 
@@ -157,7 +193,10 @@ function addMobielButtonEventListener(){
                 kb.SPACE = true;
             } else if (btn.id == "mobile-throw") {
                 kb.D = true;
-                world.characterShoot();
+                if (!gameIsPaused) {
+                    world.characterShoot();
+                }
+               
             }
             
         })
@@ -192,8 +231,8 @@ function addKeydownEventListener (){
                     break;
                 case SHOT:
                     kb.D = true;
-                    if (world) {
-                        world.character.isShooting = false;
+                    if (!gameIsPaused) {
+                        world.characterShoot();
                     }
                     break;
                 case ARROW_DOWN:

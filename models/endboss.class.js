@@ -1,13 +1,13 @@
 class EndBoss extends CoolidableObject {
-    x = 3200;
+    x = LEVEL_1_END_X + 300;
     // x = 400;
-    y = 20;
-    h = 420;
-    w = 250;
+    y = 90;
+    h = 350;
+    w = 220;
     
     world;
 
-    speed = 1;
+    speed = 5;
     damage = 100;
     alertCount = 999;
 

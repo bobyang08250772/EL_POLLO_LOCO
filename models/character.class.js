@@ -149,7 +149,7 @@ class Character extends CoolidableObject{
     animateCharacter() {
         if (gameIsPaused) return;
         this.setTimer();
-        if (this.isDead()) {
+        if (this.isDead() || gameTimer <= 0) {
             this.audioPlay(this.AUDIO_DEAD);
             this.playAnimation(this.IMAGES_DEAD);
             setTimeout(() => stopGame(false), 1000);
@@ -190,8 +190,8 @@ class Character extends CoolidableObject{
         return this.world.kb.RIGHT || this.world.kb.LEFT;
     }
 
-    isFalling() {
-        return this.speedY < 0;
+    isFallingUpon(mo) {
+        return this.speedY < 0 && this.y + this.h - this.offset.bottom <= mo.y + mo.h - mo.offset.bottom;
     }
 
     setTimer() {

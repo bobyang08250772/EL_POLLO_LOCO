@@ -26,7 +26,7 @@ function getPercentage(numerator, denominator) {
 
 
 function setTimeout3000 (fn) {
-    setTimeout(fn, 3000);
+    setTimeout(fn, 5000);
 }
 
 

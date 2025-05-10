@@ -126,10 +126,11 @@ class World {
     checkCharacterWithEnemies() {
         for (let index = 0; index < this.level.enemies.length; index++) {
             const enemy = this.level.enemies[index];
-            if (this.character.isColliding(enemy) && this.character.isFalling()) {
+            if (this.character.isColliding(enemy) && this.character.isFallingUpon(enemy)) {
                 enemy.audioPlay(enemy.AUDIO_HURT);
                 this.removeEnemy(enemy);
                 this.character.jump(10);
+                
             } else if( this.character.isColliding(enemy) && enemy.energy){
                 this.setCharacterEnery(enemy.damage);
             }
@@ -248,7 +249,6 @@ class World {
     removeBottles(bottle) {
         bottle.enemyTouche();
         bottle.speed = 0;
-
         setPushToArrayTimeout300(() => this.bottlesToRemove.push(bottle));
         setRemoveFromArraryTimeout310(() => this.throwableObjects = this.throwableObjects.filter(b => !this.bottlesToRemove.includes(b)));
     }

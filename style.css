@@ -67,6 +67,25 @@ h1 {
     gap: 10px;
 }
 
+.canvas-screen-top .time {
+    font-family: 'Calibri', Courier, monospace;
+    font-weight: 900;
+    font-size: 2rem;
+}
+
+.canvas-screen-top .time.normal {
+    color: rgba(0, 0, 0);
+}
+
+.canvas-screen-top .time.warining {
+    color: rgba(230, 142, 60);
+}
+
+.canvas-screen-top .time.urgent {
+    color: rgb(210, 81, 81);
+}
+
+
 .canvas-screen-bottom {
     box-sizing: border-box;
     padding: 5px 20px;

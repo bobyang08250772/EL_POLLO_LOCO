@@ -1,18 +1,18 @@
 class SmallChicken extends CoolidableObject {
     y = 385;
     originY = 385;
-    h = 40;
-    w = 40;
+    h = 50;
+    w = 50;
     damage = 2;
     energy = 100;
     speed = 1;
     
 
     offset = {
-        top: 5,
-        left: 5,
-        right: 5,
-        bottom: 5
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
     }
 
     IMAGES_WALKING =  [

@@ -1,6 +1,7 @@
 
 
 const loadingBtn = document.getElementById("loading-btn");
+const gameTimerDiv = document.getElementById("game-timer");
 let startScreen = document.getElementById("start-screen");
 let soundImgs = document.querySelectorAll(".sound-img");
 let pauseImg = document.getElementById("pause-img");
