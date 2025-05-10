@@ -4,15 +4,15 @@ class GroundBottle extends Collectable {
     w = 70;
 
     offset = {
-        left: 25,
-        right: 25,
-        top: 20,
-        bottom: 20
+        left: 30,
+        right: 20,
+        top: 10,
+        bottom: 10
     }
 
     IMAGES = [
-        "/img/6_salsa_bottle/1_salsa_bottle_on_ground.png",
-        "/img/6_salsa_bottle/2_salsa_bottle_on_ground.png"
+        "img/6_salsa_bottle/1_salsa_bottle_on_ground.png",
+        "img/6_salsa_bottle/2_salsa_bottle_on_ground.png"
     ];
 
 

@@ -3,8 +3,10 @@ class Character extends CoolidableObject{
     w = 100;
     h = 280;
     y = 0;
+    groundY = 156;
     world;
-    speed = 8;
+    speed = 10;
+    isShooting = false;
 
     offset = {
         top: 110,
@@ -19,7 +21,7 @@ class Character extends CoolidableObject{
     maxIdleCount = 400;
 
 
-    IMAGE_ORIGIN = "/img/2_character_pepe/2_walk/W-21.png";
+    IMAGE_ORIGIN = "img/2_character_pepe/2_walk/W-21.png";
 
     IMAGES_IDLE = [
         "img/2_character_pepe/1_idle/idle/I-1.png",
@@ -89,6 +91,14 @@ class Character extends CoolidableObject{
         "img/2_character_pepe/4_hurt/H-43.png"
     ];
 
+    AUDIO_WALKING = ASSERTS["audios"]["audio/running.wav"];
+    AUDIO_THROWING = ASSERTS["audios"]["audio/bottle_throw.mp3"];
+    AUDIO_JUMPING = ASSERTS["audios"]["audio/jump.wav"];
+    AUDIO_HURT = ASSERTS["audios"]["audio/hurt.mp3"];
+    AUDIO_BOTTLE_COLLECTING = ASSERTS["audios"]["audio/bottle_collect.wav"];
+    AUDIO_COIN_COLLECTING = ASSERTS["audios"]["audio/coin.mp3"];
+    AUDIO_DEAD = ASSERTS["audios"]["audio/dead.wav"];
+
     constructor() {
         super().loadImage(this.IMAGE_ORIGIN);
         this.loadImages(this.IMAGES_WALKING);
@@ -96,21 +106,28 @@ class Character extends CoolidableObject{
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_IDLE);
-        this.loadImages(this.IMAGES_LONG_IDLE)
+        this.loadImages(this.IMAGES_LONG_IDLE);
+        
         this.animate();
         this.applyGravity();
     }
 
     canMoveRight() {
-        return this.world.kb.RIGHT && this.x < LEVEL_1_END_X;
+        return this.world.kb.RIGHT && this.x < LEVEL_1_END_X && !this.isDead() && !gameIsPaused;
     }
 
     canMoveLeft() {
-        return this.world.kb.LEFT && this.x > 0;
+        return this.world.kb.LEFT && this.x > 0 && !this.isDead() && !gameIsPaused;;
     }
 
     canJump() {
-        return this.world.kb.SPACE && !this.isAboveGround();
+        return this.world.kb.SPACE && !this.isAboveGround() && !this.isDead() && !gameIsPaused;
+    }
+
+    shooting() {
+        if (gameIsPaused) return;
+        this.isShooting = true;
+        this.loadImage(this.IMAGE_ORIGIN);
     }
 
     moveCharacter() {
@@ -123,23 +140,29 @@ class Character extends CoolidableObject{
             this.otherDirection = true;
         }
         if (this.canJump()) {
-            this.jump();
+            this.audioPlay(this.AUDIO_JUMPING);
+            this.jump(20);
         }
         this.world.camera_x = -this.x + 100;
     }
 
     animateCharacter() {
+        if (gameIsPaused) return;
         this.setTimer();
         if (this.isDead()) {
+            this.audioPlay(this.AUDIO_DEAD);
             this.playAnimation(this.IMAGES_DEAD);
+            setTimeout(() => stopGame(false), 1000);
         } else if(this.isHurt()){
+            this.audioPlay(this.AUDIO_HURT);
             this.playAnimation(this.IMAGES_HURT);
-        } else if (this.isAboveGround()) {
+        } else if (this.isAboveGround()) { 
             this.playAnimation(this.IMAGES_JUMPING);
-        } else if (this.world.kb.D) {
+        } else if (this.isShooting) {
             this.playAnimation(this.IMAGES_THROWING);
         } else {
-            if (this.world.kb.RIGHT || this.world.kb.LEFT){
+            if (this.isWalking()){
+                this.audioPlay(this.AUDIO_WALKING);
                 this.playAnimation(this.IMAGES_WALKING);
             } else if (this.idleTimer > this.maxIdleCount) {
                 this.playAnimation(this.IMAGES_LONG_IDLE);
@@ -150,23 +173,29 @@ class Character extends CoolidableObject{
     }
 
     animate() {
-     
         setStoppableInterval(()=>{
             this.moveCharacter();
         }, 1000/60);
-
 
         setStoppableInterval(()=>{
             this.animateCharacter();
         }, 100);
     }
 
-    jump() {
-        this.speedY = 20;
+    jump(speedY) {
+        this.speedY = speedY;
+    }
+
+    isWalking() {
+        return this.world.kb.RIGHT || this.world.kb.LEFT;
+    }
+
+    isFalling() {
+        return this.speedY < 0;
     }
 
     setTimer() {
-        if (!this.world.kb.RIGHT && !this.world.kb.LEFT && !this.isAboveGround() && !this.world.kb.D) {
+        if (!this.world.kb.RIGHT && !this.world.kb.LEFT && !this.isAboveGround() && !this.isShooting) {
             this.idleTimer += 10;
         } else {
             this.idleTimer = 0;

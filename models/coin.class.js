@@ -3,12 +3,6 @@ class Coin extends Collectable {
     h = 60;
     w = 70;
 
-    speedY = 1;
-    speed = 2;
-    accelerationY = 1;
-    accelerationX = .5;
-
-
     offset = {
         left: 25,
         right: 25,
@@ -26,35 +20,21 @@ class Coin extends Collectable {
         super().loadImage(this.IMAGES[0]);
         this.loadImages(this.IMAGES);
         this.animate();
-        // this.moveAway(100, 100);
 
         this.x = getRandomNum(100, LEVEL_1_END_X);
         this.y = getRandomNum(120, 380);
-        console.log(this.y);
         
     }
 
     animate() {
+        
+
         let id = setStoppableInterval(()=>{
+            if (gameIsPaused) return;
             this.playAnimation(this.IMAGES);
-        }, 1000/60);
+        }, 1000 / 60);
 
         this.intervalIDs.push(id);
-    }
-
-    moveAway(desX, desY) {
-        let self = this;
-        let id = setStoppableInterval(() => {
-            if (self.y > desY) {
-                self.y -= self.speedY;
-                self.speedY += self.accelerationY;
-            }
-            if (self.x > desX) {
-                self.x -= self.speed;
-                self.speed += self.accelerationX;
-
-            }
-        },  1000 / 60);
     }
 
 }

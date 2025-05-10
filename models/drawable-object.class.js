@@ -15,10 +15,13 @@ class DrawableObject {
     }
 
     loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
-
-        allloadedImgs.push(this.img);
+        // this.img = new Image();
+        // this.img.src = path;
+        if (ASSERTS["images"]) {
+            this.img = ASSERTS["images"][path];
+        }
+        
+       
     }
 
     draw(ctx) {
@@ -46,25 +49,24 @@ class DrawableObject {
 
     drawFrame(ctx) {
         
-        if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof ImageTextBar) {
-            ctx.beginPath();
-            ctx.lineWidth = "5";
-            ctx.strokeStyle = "blue";
-            ctx.rect(this.x, this.y, this.w, this.h);
-            ctx.stroke();
+        // if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof ImageTextBar || this instanceof GroundBottle || this instanceof ThrowableObject || this instanceof EndBoss) {
+        //     ctx.beginPath();
+        //     ctx.lineWidth = "5";
+        //     ctx.strokeStyle = "blue";
+        //     ctx.rect(this.x, this.y, this.w, this.h);
+        //     ctx.stroke();
 
-            this.drawFrameWithOffset(ctx);
-        }
+        //     this.drawFrameWithOffset(ctx);
+        // }
     }
 
     drawFrameWithOffset(ctx) {
-        //if (this instanceof Character || this instanceof Chicken) {
-            ctx.beginPath();
-            ctx.lineWidth = "2";
-            ctx.strokeStyle = "red";
-            ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.w - this.offset.right - this.offset.left, this.h - this.offset.bottom - this.offset.top);
-            ctx.stroke();
-        //}
+        ctx.beginPath();
+        ctx.lineWidth = "2";
+        ctx.strokeStyle = "red";
+        ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.w - this.offset.right - this.offset.left, this.h - this.offset.bottom - this.offset.top);
+        ctx.stroke();
+        
     }
 
     drawShadow(ctx) {
@@ -76,9 +78,10 @@ class DrawableObject {
 
     loadImages(arr){
         arr.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.imgCache[path] = img;
+            if (ASSERTS["images"]) {
+                this.imgCache[path] = ASSERTS["images"][path];
+            }
+            
         });
         
     }
@@ -90,5 +93,10 @@ class DrawableObject {
         this.img = this.imgCache[path];
         this.currentImage++;
 
+    }
+
+    audioPlay(audioElement) {
+        audioElement.play();
+       
     }
 }

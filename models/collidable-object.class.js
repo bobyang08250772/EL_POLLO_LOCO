@@ -1,6 +1,9 @@
 class CoolidableObject extends MovableObject {
     collidable = true;
+    intervalIDs = [];
+
     damage = 0;
+    energy = 100;
 
     constructor() {
         super();
@@ -13,8 +16,8 @@ class CoolidableObject extends MovableObject {
             this.y + this.offset.top < mo.y + mo.h - mo.offset.bottom;
     }
 
-    hit() {
-        this.energy -= 3;
+    hit(damage) {
+        this.energy -= damage;
         if(this.energy < 0) {
             this.energy = 0;
         } else {
@@ -28,5 +31,9 @@ class CoolidableObject extends MovableObject {
 
     isHurt() {
         return getTimeElapsedInSecond(this.lastHit) < .5;
+    }
+
+    destroySelf() {
+        this.intervalIDs.forEach(clearInterval);
     }
 }

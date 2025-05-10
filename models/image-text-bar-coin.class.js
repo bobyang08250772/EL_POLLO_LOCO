@@ -1,5 +1,7 @@
 class ImageTextBarCoin extends ImageTextBar{
 
+  
+
     offset = {
         left: 70,
         right: 70,
@@ -15,6 +17,8 @@ class ImageTextBarCoin extends ImageTextBar{
 
         this.textX1 = this.x + 94;
         this.textX2 = this.x + 88;
-        this.textY = this.y + 63;
+        this.textY = 95;
     }
+
+    
 }

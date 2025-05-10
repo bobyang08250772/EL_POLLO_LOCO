@@ -10,14 +10,25 @@ class  ImageTextBar extends DrawableObject{
     textX2 = 0; // two digits
     textY = 0;
 
+    jumpCount = 0;
+    lastJumpIntervalId;
+
+    speedY = 2;
+    yDirection = 1;
+    originalY = 93;
+    jumpY = 85;
+
 
     constructor(x, y, w, h, path) {
-        super()
+        super();
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.loadImage(path);
+
+
+        // this.jump();
     }
 
 
@@ -53,5 +64,31 @@ class  ImageTextBar extends DrawableObject{
         ctx.fillText(textString, textX, this.textY);
     }
 
+    jump() {
+        this.clearLastJump();
+        this.lastJumpIntervalId = setStoppableInterval(()=>{
+            this.jumpCount ++;
+            if(this.jumpCount > 10) {
+                this.textY = this.originalY;
+                clearInterval(this.lastJumpIntervalId);
+            }
+            this.textY += this.speedY * this.yDirection;
+            if (this.textY > this.originalY) {
+                this.yDirection = -1;
+            } else if (this.textY < this.jumpY){
+                this.yDirection = 1;
+            }
+        }, 0.01);
+        
+    }
+
+    clearLastJump() {
+        this.jumpCount = 0;
+        if(this.lastJumpIntervalId) {
+            clearInterval(this.lastJumpIntervalId);
+            this.textY = this.originalY;
+        }
+        
+    }
     
 }

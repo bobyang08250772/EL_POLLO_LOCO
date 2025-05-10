@@ -1,17 +1,27 @@
-class Endboss extends CoolidableObject {
+class EndBoss extends CoolidableObject {
     x = 3200;
-    y = -40;
-    h = 500;
-    w = 300;
+    // x = 400;
+    y = 20;
+    h = 420;
+    w = 250;
+    
+    world;
+
+    speed = 1;
+    damage = 100;
+    alertCount = 999;
+
+    isAlert = false;
+    isAttacking = false;
 
     offset = {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
+        top: 100,
+        left: 45,
+        right: 40,
+        bottom: 20
     }
 
-    IMAGES_WALKING = [
+    IMAGES_ALERT = [
         "img/4_enemie_boss_chicken/2_alert/G5.png",
         "img/4_enemie_boss_chicken/2_alert/G6.png",
         "img/4_enemie_boss_chicken/2_alert/G7.png",
@@ -22,16 +32,109 @@ class Endboss extends CoolidableObject {
         "img/4_enemie_boss_chicken/2_alert/G12.png",
     ];
 
+    IMAGES_WALKING = [
+        "img/4_enemie_boss_chicken/1_walk/G1.png",
+        "img/4_enemie_boss_chicken/1_walk/G2.png",
+        "img/4_enemie_boss_chicken/1_walk/G3.png",
+        "img/4_enemie_boss_chicken/1_walk/G4.png"
+    ];
+
+    IMAGES_DEAD = [
+        "img/4_enemie_boss_chicken/5_dead/G24.png",
+        "img/4_enemie_boss_chicken/5_dead/G25.png",
+        "img/4_enemie_boss_chicken/5_dead/G26.png",
+    ];
+
+    IMAGES_HURT = [
+        "img/4_enemie_boss_chicken/4_hurt/G21.png",
+        "img/4_enemie_boss_chicken/4_hurt/G21.png",
+        "img/4_enemie_boss_chicken/4_hurt/G23.png",
+    ];
+
+    IMAGES_ATTACKING = [
+        "img/4_enemie_boss_chicken/3_attack/G13.png",
+        "img/4_enemie_boss_chicken/3_attack/G14.png",
+        "img/4_enemie_boss_chicken/3_attack/G15.png",
+        "img/4_enemie_boss_chicken/3_attack/G16.png",
+        "img/4_enemie_boss_chicken/3_attack/G17.png",
+        "img/4_enemie_boss_chicken/3_attack/G18.png",
+        "img/4_enemie_boss_chicken/3_attack/G19.png",
+        "img/4_enemie_boss_chicken/3_attack/G20.png"
+    ];
+
+    AUDIO_HURT = ASSERTS["audios"]["audio/chicken_hurt.mp3"];
+    AUDIO_DEAD = ASSERTS["audios"]["audio/boss_dead.mp3"];
+    AUDIO_SPAWNING = ASSERTS["audios"]["audio/boss_intro_sound.mp3"];
+
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_ALERT);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_ATTACKING);
+        this.loadImages(this.IMAGES_DEAD);
         this.animate();
     }
 
     animate() {
-        setInterval(()=> {
-            this.playAnimation(this.IMAGES_WALKING);
+
+        setStoppableInterval(()=>{
+            this.moveCharacter();
+        }, 1000/60);
+
+        setStoppableInterval(()=>{
+            this.animateCharacter();
         }, 100);
     }
+
+    moveCharacter() {
+        if (gameIsPaused) return;
+        if (this.canMoveLeft()) {
+            this.moveLeft();
+        }
+    }
+    
+    animateCharacter() {
+        if (gameIsPaused) return;
+        if (this.alertCount < 16) {
+            this.playAnimation(this.IMAGES_ALERT);
+            this.audioPlay(this.AUDIO_SPAWNING);
+        } else {
+            
+            
+            if(this.isHurt()) {
+                this.playAnimation(this.IMAGES_HURT);
+            } else if(this.isAttacking) {
+                this.playAnimation(this.IMAGES_ATTACKING);
+            } else if(this.isDead()){
+                this.audioPlay(this.AUDIO_DEAD);
+                this.playAnimation(this.IMAGES_DEAD);
+                setTimeout(() => {
+                    stopGame(true);
+                }, 1000);
+            } else {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+        } 
+        this.setAlertStatus();
+    }
+
+    setAlertStatus() {
+        this.alertCount ++; 
+        if(this.world) {
+            if ((this.world.character.x > this.world.level.level_end_x - 100) && !this.isAlert) {
+                this.alertCount = 0;
+                this.isAlert = true;
+                
+                this.world.endBossStatusBar.isShowable = true;
+            }
+        }
+    }
+
+    canMoveLeft() {
+        return this.alertCount > 16 && this.isAlert && !this.isDead() && !gameIsPaused;
+    }
+
+   
 
 }

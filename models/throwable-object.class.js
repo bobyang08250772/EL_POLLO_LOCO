@@ -1,15 +1,21 @@
 class ThrowableObject extends CoolidableObject {
     x = 100;
     y = 100;
+    groundY = 371;
     w = 50;
     h = 60;
     speed = 12;
+    damage = 10;
 
-    intervalIDs = [];
+    offset = {
+        left: 20,
+        right: 20,
+        top: 15,
+        bottom: 15
+    }
 
-    isRemovable = false;
+    isBroken = false;
     lastHitGround;
-    
 
     IMAGEG_BROKEN =  [
         "img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png",
@@ -25,11 +31,12 @@ class ThrowableObject extends CoolidableObject {
         "img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png",
         "img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png",
         "img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png",
-
     ];
 
+    AUDIO_BROKEN = ASSERTS["audios"]["audio/bottle_shatter.mp3"];
+
     constructor(x, y, speedDirection) {
-        super().loadImage("/img/6_salsa_bottle/salsa_bottle.png");
+        super().loadImage("img/6_salsa_bottle/salsa_bottle.png");
         this.loadImages(this.IMAGES_ROTATING);
         this.loadImages(this.IMAGEG_BROKEN);
 
@@ -37,11 +44,17 @@ class ThrowableObject extends CoolidableObject {
         this.animate();
     }
 
-
     animate() {
         let id = setStoppableInterval(()=>{
-             if(!this.isAboveGround()) {
-                this.bottleBroken();
+            if (gameIsPaused) return;
+
+             if(!this.isAboveGround() || this.isBroken) {
+                this.playAnimation(this.IMAGEG_BROKEN);
+
+                // Animation played only once
+                if (this.currentImage == this.IMAGEG_BROKEN.length) {
+                    this.destroySelf();
+                }
             } else {
                 this.playAnimation(this.IMAGES_ROTATING);
             }
@@ -50,15 +63,8 @@ class ThrowableObject extends CoolidableObject {
         this.intervalIDs.push(id);
     }
 
-    bottleBroken() {
-        this.playAnimation(this.IMAGEG_BROKEN);
-        this.speed = 0;
-        if (!this.lastHitGround) {
-            this.lastHitGround = getTimestamp();     
-        }
-        if(getTimeElapsedInSecond(this.lastHitGround) > 0.001) {
-            this.isRemovable = true;
-        }
+    enemyTouche() {
+        this.isBroken = true;
     }
 
     throw(x, y, speedDirection) {
@@ -68,6 +74,7 @@ class ThrowableObject extends CoolidableObject {
         this.applyGravity();
 
         let id = setStoppableInterval(() => {
+            if (gameIsPaused) return;
             this.x += (this.speed * speedDirection);
         }, 25);
         this.intervalIDs.push(id);
@@ -77,8 +84,6 @@ class ThrowableObject extends CoolidableObject {
         return this.y < 350;
     }
 
-    destroySelf() {
-        this.intervalIDs.forEach(clearInterval);
-    }
+    
 
 }

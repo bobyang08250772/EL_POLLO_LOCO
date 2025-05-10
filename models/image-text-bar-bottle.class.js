@@ -14,7 +14,8 @@ class ImageTextBarBottle extends ImageTextBar{
         this.circleY = this.y + (this.h / 2);
 
         this.textX1 = this.x + 73;
-        this.textX2 = this.x + 67;
-        this.textY = this.y + 34;
+        this.textX2 = this.x + 66;
+        this.textY = 93;
+        
     }
 }
