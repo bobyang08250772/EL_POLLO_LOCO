@@ -16,6 +16,7 @@ class Coin extends Collectable {
     ];
 
 
+    /** Coin constructor */
     constructor() {
         super().loadImage(this.IMAGES[0]);
         this.loadImages(this.IMAGES);
@@ -26,9 +27,8 @@ class Coin extends Collectable {
         
     }
 
+    /** Coin animation */
     animate() {
-        
-
         let id = setStoppableInterval(()=>{
             if (gameIsPaused) return;
             this.playAnimation(this.IMAGES);

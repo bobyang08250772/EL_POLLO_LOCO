@@ -8,8 +8,8 @@ class MovableObject extends DrawableObject{
     
     lastHit = 0;
 
+    /** ImageTextBar constructor */
     applyGravity() {
-       
         let id = setStoppableInterval(() => {
             if (gameIsPaused) return;
             if (this.isAboveGround() || this.speedY > 0) {
@@ -23,12 +23,15 @@ class MovableObject extends DrawableObject{
         }, 1000 / 25);
     }
 
+    /** Check if movable object is above ground */
     isAboveGround() {}
 
+    /** Check if movable object can move left  */
     moveRight() {
         this.x += this.speed;
     }
 
+    /** Check if movable object can move left */
     moveLeft() {
         this.x -= this.speed;
     }

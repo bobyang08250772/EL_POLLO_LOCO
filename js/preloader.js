@@ -139,6 +139,9 @@ const imageAudioMap = {
     "img/8_coin/coin_1.png": "img/8_coin/coin_1.png",
     "img/8_coin/coin_2.png": "img/8_coin/coin_2.png",
 
+    "img/10_controls/continue.png": "img/10_controls/continue.png",
+    "img/10_controls/pause.png": "img/10_controls/pause.png",
+
     "audio/bg_music.wav": "audio/bg_music.wav",
     "audio/boss_dead.mp3": "audio/boss_dead.mp3",
     "audio/boss_intro_sound.mp3": "audio/boss_intro_sound.mp3",
@@ -158,6 +161,7 @@ const imageAudioMap = {
 let loaded = 0;
 
 
+/** Call createImageLoadingPromises */
 async function preloadImages() {
     const imageAudioMapArr = Object.entries(imageAudioMap);
     const promises = createImageLoadingPromises(imageAudioMapArr);
@@ -165,8 +169,10 @@ async function preloadImages() {
 }
 
 
+/** Create Imageloading Promises */
 function createImageLoadingPromises(imageAudioMapArr) {
     loaded = 0;
+    loadingBtn.innerText = "Asserts are loading ...";
     const promises = imageAudioMapArr.map(([key, url]) => {
         return new Promise((resolve, reject) => {
             let suffix = url.split(".").pop().toLowerCase();
@@ -181,6 +187,7 @@ function createImageLoadingPromises(imageAudioMapArr) {
 }
 
 
+/** Create all predloaded audio object */
 function createAudioObj(imageAudioMapArr, key, url, resolve, reject) {
     const audio = new Audio();
     allAudios.push();
@@ -195,6 +202,7 @@ function createAudioObj(imageAudioMapArr, key, url, resolve, reject) {
 }
 
 
+/** Create all preloaded images */
 function createImgObj(imageAudioMapArr, key, url, resolve, reject) {
     const img = new Image();
     img.onload = () => {
@@ -206,13 +214,15 @@ function createImgObj(imageAudioMapArr, key, url, resolve, reject) {
     img.src = url;
 }
 
+
+/** Change progress bar percentage */
 function setProgressBar(loadingText, loaded, length) {
     let loadingPercentage = getPercentage(loaded, length);
-
     setLoadingBtnText(loadingPercentage, loadingText)
 }
 
 
+/** Remap asser keys and values */
 async function mapImageKeyValue(promises) {
     const results = await Promise.all(promises);
     const asserts = {};
@@ -223,6 +233,7 @@ async function mapImageKeyValue(promises) {
 }
 
 
+/** Load all asserts */
 function loadAssets(fn) {
     Promise.all([
         preloadImages(),
@@ -233,7 +244,7 @@ function loadAssets(fn) {
 }
 
 
-
+/** Split Assesrts into Images and Audios  */
 function splitAsserts(asserts){
     let images = {};
     let audios = {};

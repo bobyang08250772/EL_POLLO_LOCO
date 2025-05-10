@@ -5,7 +5,7 @@
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Document</title>
+    <title>EL POLLO LOCO</title>
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="css/standard.css">
     <link rel="stylesheet" href="style.css">
@@ -33,7 +33,7 @@
                      </div>
                     
                 </div>
-                <div class="canvas-screen-bottom">
+                <div class="canvas-screen-bottom" id="canvas-screen-bottom">
                     <div class="flex canvas-screen-bottom-left">
                         <button id="mobile-left" class="mobile-control-btn" >
                             <img class="" src="img/10_controls/MOBILE_LEFT_icon.png" alt="left" title="Left">
@@ -61,19 +61,19 @@
                 <p>PLEASE ROTATE YOUR DEVICE TO PLAY</p>
             </div>
             <div class="start-screen game-screen" id="start-screen">
-                <button class="text-btn sound-btn sound-btn-hover start-game-btn " onclick="startLoading()">Start</button>
+                <button class="text-btn sound-btn-hover start-game-btn " onclick="startLoading()">Start</button>
                 
                 <div class="start-screen-menu flex">
-                    <button class="img-btn sound-btn sound-btn-hover" onclick="toggleFullScreen()" id="fullscreen-btn">
+                    <button class="img-btn sound-btn-hover" onclick="toggleFullScreen()" id="fullscreen-btn">
                         <img id="full-screen-img" src="img/10_controls/fullscreen_on.png" alt="full screen" title="Full Screen">
                     </button>
-                    <button class="img-btn sound-btn sound-btn-hover" onclick="enableSound()">
-                        <img class="sound-img" src="img/10_controls/sound-off.png" alt="full screen" title="Full Screen">
+                    <button class="img-btn sound-btn-hover " onclick="enableSound()">
+                        <img class="sound-img" src="img/10_controls/sound-on.png" alt="full screen" title="Full Screen">
                     </button>
-                    <button class="img-btn sound-btn sound-btn-hover control-btn" onclick="goToControlScreen()">
+                    <button class="img-btn sound-btn-hover  control-btn" onclick="goToControlScreen()">
                         <img src="img/10_controls/control.png" alt="game console" title="Rules">
                     </button>
-                    <button class="img-btn sound-btn sound-btn-hover story-btn" onclick="goToBgstoryScreen()">
+                    <button class="img-btn sound-btn-hover story-btn" onclick="goToBgstoryScreen()">
                         <img src="img/10_controls/story2.png" alt="story" title="Background Story">
                     </button>
                 </div>
@@ -85,7 +85,7 @@
                 <button class="loading-btn" id="loading-btn"></button>
             </div>
             <div class="story-screen d-none game-screen flex-column" id="story-screen">
-                <button class="img-btn sound-btn sound-btn-hover go-back-btn" onclick="goBackToStartScreen()">
+                <button class="img-btn sound-btn sound-btn-hover go-back-btn" onclick="storyScreenGoBack()">
                     <img src="img/10_controls/back.png" alt="go back">
                 </button>
                 <div class="story-container">
@@ -128,21 +128,23 @@
                 </div>
                 <button class="loading-btn" id="loading-btn">Asserts are loading ... 0%</button>
             </div>
-            <div class="lost-end-screen d-none game-screen" id="lost-end-screen">
-
+            <div class="lost-end-screen game-screen flex" id="lost-end-screen">
+                <button class="text-btn sound-btn sound-btn-hover d-none" onclick="playAgain()">Once Again</button>
+                <button class="text-btn sound-btn sound-btn-hover d-none" onclick="goBackToHome()">Home</button>
             </div>
-            <div class="won-end-screen d-none game-screen" id="won-end-screen">
-
+            <div class="won-end-screen d-none game-screen flex" id="won-end-screen">
+                <button class="text-btn sound-btn sound-btn-hover d-none" onclick="playAgain()">Once Again</button>
+                <button class="text-btn sound-btn sound-btn-hover d-none" onclick="goBackToHome()">Home</button>
             </div>
             <div class="confirm-screen d-none game-screen flex" id="confirm-screen">
-                <div class="confirm-overlay"></div>
+                <div class="confirm-overlay in-screen-overlay"></div>
                 <div class="confirm-screen-box flex-column">
                     <p>
                         Are you sure to leave?
                     </p>
                     <div class="flex">
                         <button class="text-btn sound-btn sound-btn-hover" onclick="resumeGame()">Resume</button>
-                        <button id="quit-btn" class="text-btn sound-btn sound-btn-hover" onclick="goBackToStartScreen()">Quit</button>
+                        <button id="quit-btn" class="text-btn sound-btn sound-btn-hover" onclick="goBackToHome()">Quit</button>
                     </div>
                 </div>
                 

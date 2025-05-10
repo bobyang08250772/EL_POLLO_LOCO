@@ -26,6 +26,7 @@ class Chicken extends CoolidableObject {
 
     AUDIO_HURT = ASSERTS["audios"]["audio/chicken_hurt.mp3"];
 
+    /** Chick constructor */
     constructor() {
         super().loadImage("img/3_enemies_chicken/chicken_normal/1_walk/1_w.png");
         this.loadImages(this.IMAGES_WALKING);
@@ -37,11 +38,8 @@ class Chicken extends CoolidableObject {
         this.animate();
     }
 
-    
-
+    /** Chick animation */
     animate() {
-       
-
         setStoppableInterval(() => {
             if (gameIsPaused) return;
             this.moveLeft();

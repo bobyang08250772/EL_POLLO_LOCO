@@ -99,6 +99,7 @@ class Character extends CoolidableObject{
     AUDIO_COIN_COLLECTING = ASSERTS["audios"]["audio/coin.mp3"];
     AUDIO_DEAD = ASSERTS["audios"]["audio/dead.wav"];
 
+    /** BackgroundObject Contructor */
     constructor() {
         super().loadImage(this.IMAGE_ORIGIN);
         this.loadImages(this.IMAGES_WALKING);
@@ -112,24 +113,29 @@ class Character extends CoolidableObject{
         this.applyGravity();
     }
 
+    /** Check if character can move right */
     canMoveRight() {
         return this.world.kb.RIGHT && this.x < LEVEL_1_END_X && !this.isDead() && !gameIsPaused;
     }
 
+    /** Check if character can move left */
     canMoveLeft() {
         return this.world.kb.LEFT && this.x > 0 && !this.isDead() && !gameIsPaused;;
     }
 
+    /** Check if character can move jump */
     canJump() {
         return this.world.kb.SPACE && !this.isAboveGround() && !this.isDead() && !gameIsPaused;
     }
 
+    /** Check if character is shooting */
     shooting() {
         if (gameIsPaused) return;
         this.isShooting = true;
         this.loadImage(this.IMAGE_ORIGIN);
     }
 
+    /** Handle character moving */
     moveCharacter() {
         if (this.canMoveRight()) {
             this.moveRight();
@@ -146,32 +152,72 @@ class Character extends CoolidableObject{
         this.world.camera_x = -this.x + 100;
     }
 
+
+    /** Handle character animation */
     animateCharacter() {
         if (gameIsPaused) return;
         this.setTimer();
+
+        if (this.shouldDie()) return;
+        if (this.shouldReactToHurt()) return;
+        if (this.shouldJump()) return;
+        if (this.shouldShoot()) return;
+
+        this.handleIdleOrWalk();
+    }
+
+    /**  Handles death logic and triggers the game over sequence */
+    shouldDie() {
         if (this.isDead() || gameTimer <= 0) {
             this.audioPlay(this.AUDIO_DEAD);
             this.playAnimation(this.IMAGES_DEAD);
-            setTimeout(() => stopGame(false), 1000);
-        } else if(this.isHurt()){
+            setTimeout(() => stopGame(false), 1000); 
+            return true;
+        }
+        return false;
+    }
+
+     /**  Triggers hurt animation and sound if the character is hit */
+    shouldReactToHurt() {
+        if (this.isHurt()) {
             this.audioPlay(this.AUDIO_HURT);
-            this.playAnimation(this.IMAGES_HURT);
-        } else if (this.isAboveGround()) { 
-            this.playAnimation(this.IMAGES_JUMPING);
-        } else if (this.isShooting) {
-            this.playAnimation(this.IMAGES_THROWING);
+            this.playAnimation(this.IMAGES_HURT); 
+            return true;
+        }
+        return false;
+    }
+
+     /**  Plays jumping animation if the character is above the ground */
+    shouldJump() {
+        if (this.isAboveGround()) {
+            this.playAnimation(this.IMAGES_JUMPING); 
+            return true;
+        }
+        return false;
+    }
+
+     /**  Triggers shooting animation if the character is shooting */
+    shouldShoot() {
+        if (this.isShooting) {
+            this.playAnimation(this.IMAGES_THROWING); 
+            return true;
+        }
+        return false;
+    }
+
+    /**  Chooses between walking, idle, or long idle animations */
+    handleIdleOrWalk() {
+        if (this.isWalking()) {
+            this.audioPlay(this.AUDIO_WALKING); 
+            this.playAnimation(this.IMAGES_WALKING); 
+        } else if (this.idleTimer > this.maxIdleCount) {
+            this.playAnimation(this.IMAGES_LONG_IDLE);
         } else {
-            if (this.isWalking()){
-                this.audioPlay(this.AUDIO_WALKING);
-                this.playAnimation(this.IMAGES_WALKING);
-            } else if (this.idleTimer > this.maxIdleCount) {
-                this.playAnimation(this.IMAGES_LONG_IDLE);
-            } else {
-                this.playAnimation(this.IMAGES_IDLE);
-            }
+            this.playAnimation(this.IMAGES_IDLE);
         }
     }
 
+     /** Animate the character */
     animate() {
         setStoppableInterval(()=>{
             this.moveCharacter();
@@ -182,18 +228,22 @@ class Character extends CoolidableObject{
         }, 100);
     }
 
+    /** Set vertical speed to simulate jumping */
     jump(speedY) {
         this.speedY = speedY;
     }
 
+    /** Check if player is pressing left or right key */
     isWalking() {
         return this.world.kb.RIGHT || this.world.kb.LEFT;
     }
 
+    /** Detect if falling from above onto another object (mo) */
     isFallingUpon(mo) {
         return this.speedY < 0 && this.y + this.h - this.offset.bottom <= mo.y + mo.h - mo.offset.bottom;
     }
 
+    /** Track player idle time for triggering long idle animations */
     setTimer() {
         if (!this.world.kb.RIGHT && !this.world.kb.LEFT && !this.isAboveGround() && !this.isShooting) {
             this.idleTimer += 10;
@@ -202,6 +252,7 @@ class Character extends CoolidableObject{
         }
     }
 
+    /** Check if charater is above around */
     isAboveGround() {
         return this.y < 140;
     }

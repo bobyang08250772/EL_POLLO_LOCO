@@ -28,6 +28,7 @@ class SmallChicken extends CoolidableObject {
 
     AUDIO_HURT = ASSERTS["audios"]["audio/small_chicken_hurt.wav"];
 
+     /** Smallchicken constructor */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
@@ -39,12 +40,11 @@ class SmallChicken extends CoolidableObject {
         this.applyGravity();
     }
 
+    /** Set Smallchicken in motion */
     animate() {
-        // this.jump();
         setStoppableInterval(() => {
             if (gameIsPaused) return;
             this.moveLeft();
-
             if(!this.isAboveGround()) {
                 this.jump();
             }
@@ -57,18 +57,20 @@ class SmallChicken extends CoolidableObject {
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
             }
-            
         }, 100);
     }
 
+    /** Check if smallchicken can jump */
     canJump() {
         return !this.isAboveGround();
     }
 
+    /** Smallchicken jumps */
     jump() {
         this.speedY = 20;
     }
 
+    /** Check if smallchicken is above ground */
     isAboveGround() {
         return this.y < 385;
     }

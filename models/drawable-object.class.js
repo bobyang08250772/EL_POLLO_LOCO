@@ -14,9 +14,8 @@ class DrawableObject {
         bottom: 0
     }
 
+    /** Load image */
     loadImage(path) {
-        // this.img = new Image();
-        // this.img.src = path;
         if (ASSERTS["images"]) {
             this.img = ASSERTS["images"][path];
         }
@@ -24,22 +23,18 @@ class DrawableObject {
        
     }
 
+    /** Draw Image on the canvas */
     draw(ctx) {
         try {
             if (this instanceof Character) {
                 ctx.save();
                 this.drawShadow(ctx);
-                // Promise.all(promiseArray).then(()=>{
-                    ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
-                // });
-               
+                ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
                 ctx.restore();
             } else {
-                // Promise.all(promiseArray).then(()=>{
-                    ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
-                // });
+                ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+                
             }   
-    
         } catch (e) {
             console.warn("Error loading image", e);
             console.log("Current Obj:", this);
@@ -47,28 +42,29 @@ class DrawableObject {
         }
     }
 
+    /** Draw frame of objects if needed */
     drawFrame(ctx) {
-        
-        // if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof ImageTextBar || this instanceof GroundBottle || this instanceof ThrowableObject || this instanceof EndBoss) {
-        //     ctx.beginPath();
-        //     ctx.lineWidth = "5";
-        //     ctx.strokeStyle = "blue";
-        //     ctx.rect(this.x, this.y, this.w, this.h);
-        //     ctx.stroke();
+        if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof ImageTextBar || this instanceof GroundBottle || this instanceof ThrowableObject || this instanceof EndBoss) {
+            ctx.beginPath();
+            ctx.lineWidth = "5";
+            ctx.strokeStyle = "blue";
+            ctx.rect(this.x, this.y, this.w, this.h);
+            ctx.stroke();
 
-        //     this.drawFrameWithOffset(ctx);
-        // }
+            this.drawFrameWithOffset(ctx);
+        }
     }
 
+    /** Draw frame with offset of objects if needed */
     drawFrameWithOffset(ctx) {
         ctx.beginPath();
         ctx.lineWidth = "2";
         ctx.strokeStyle = "red";
         ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.w - this.offset.right - this.offset.left, this.h - this.offset.bottom - this.offset.top);
         ctx.stroke();
-        
     }
 
+    /** Draw shadow of objects if needed */
     drawShadow(ctx) {
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 20;
@@ -76,18 +72,17 @@ class DrawableObject {
         ctx.shadowBlur = 20;
     }
 
+    /** Load all images when there are mutiple */
     loadImages(arr){
         arr.forEach(path => {
             if (ASSERTS["images"]) {
                 this.imgCache[path] = ASSERTS["images"][path];
             }
-            
         });
-        
     }
 
+    /** Show animation */
     playAnimation(imgs) {
-        
         let i = this.currentImage % imgs.length;
         let path = imgs[i];
         this.img = this.imgCache[path];
@@ -95,6 +90,7 @@ class DrawableObject {
 
     }
 
+    /** Play audio */
     audioPlay(audioElement) {
         audioElement.play();
        

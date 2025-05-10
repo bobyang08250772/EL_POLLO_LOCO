@@ -16,12 +16,14 @@ class StatusBar extends DrawableObject {
 
     percentage = 100;
 
+    /** Statusbar constructor */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
         this.setPercentage(100);
     }
 
+     /** Set statusbar percentage */
     setPercentage(percentage) {
         this.percentage = percentage;
         let index = parseInt(this.resolveImageIndex());  
@@ -29,6 +31,7 @@ class StatusBar extends DrawableObject {
         this.img = this.imgCache[imagePath];
     }
 
+    /** From perctange to index */
     resolveImageIndex() {
         return this.percentage / 20;
     }

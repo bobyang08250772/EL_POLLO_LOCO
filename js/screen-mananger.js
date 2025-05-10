@@ -9,6 +9,7 @@ let fullScreenIsOn = false;
 let gameIsStarted = false;
 
 
+/** Check current orientation mode */
 function checkOrientation() {
     if (window.matchMedia("(orientation: landscape)").matches) {
         if (window.innerHeight < 480) {
@@ -21,11 +22,19 @@ function checkOrientation() {
 }
 
 
+/** If the ismobile Device */
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+
+/** If the screen is small */
 function isSmallScreen() {
     return window.innerWidth < 700; 
 }
 
 
+/** When user resizes the screen */
 window.addEventListener("resize", ()=>{
     if (window.matchMedia("(orientation: landscape)").matches) {
         checkIfGameStarted();
@@ -36,10 +45,16 @@ window.addEventListener("resize", ()=>{
             checkIfGameStarted();
         }
     }
-    
+
+    if (isSmallScreen() || isMobileDevice()) {
+        canvasScreenBottom.style.display = "flex";
+    } else {
+        canvasScreenBottom.style.display = "none";
+    }
 }); 
 
 
+/** Check if Game started already */
 function checkIfGameStarted(){
     if (gameIsStarted) {
         rotateScreen.classList.add("d-none");
@@ -52,6 +67,7 @@ function checkIfGameStarted(){
 }
 
 
+/** Toggle full screen */
 function toggleFullScreen() {
     if(!fullScreenIsOn) {
         fullScreenIsOn = true;
@@ -66,9 +82,8 @@ function toggleFullScreen() {
 
 
 
-
+/**  Enter full screen mode */
 function enterfullScreen() {
-
     lastShowedScreen = startScreen;
     if (fullScreenDiv.requestFullscreen) {
         fullScreenDiv.requestFullscreen();

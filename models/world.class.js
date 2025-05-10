@@ -20,8 +20,8 @@ class World {
     isCollected = false;
     colltedBottleCount = 0;
 
+    /** World constructor */
     constructor(canvas, kb) {
-     
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.kb = kb;
@@ -30,20 +30,25 @@ class World {
         this.gaming();
     }
 
+    /** Set world property to character and endboss */
     setWorld() {
         this.character.world = this;
         this.level.endBoss.world = this;
     }
 
+    /** Draw function, to call drawall objcts */
     draw() {
         if (this.level) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.translate(this.camera_x, 0);
             this.drawAllObject();
+            this.ctx.translate(-this.camera_x, 0);
+            this.requrestAnimation();
         }
     }
 
+    /** Add all objects to map */
     drawAllObject() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.clouds);
@@ -53,18 +58,16 @@ class World {
         this.addObjectsToMap(this.level.groundBottles);
         this.addObjectsToMap(this.throwableObjects);
         this.drawFixedObjects();
-        
-        this.ctx.translate(-this.camera_x, 0);
-        this.requrestAnimation();
     }
     
-
+    /** Request animation frame */
     requrestAnimation() {
         requestAnimationFrame(()=> {
             this.draw();
         });
     }
 
+    /** Draw all fixed obcjtes */
     drawFixedObjects() {
         this.ctx.translate(-this.camera_x, 0);
         this.addToMap(this.statusBar);
@@ -76,12 +79,14 @@ class World {
 
     }
 
+    /** In this function, add to map will be called */
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         });    
     }
 
+    /** In this function, draw function will be called */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
@@ -94,6 +99,7 @@ class World {
         }
     }
 
+    /** In this function, canvas will be flipped */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.w, 0);
@@ -101,18 +107,20 @@ class World {
         mo.x = mo.x * -1;
     }
 
+     /** In this function, canvas will be flipped back */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
 
+     /** Start game */
     gaming(){
         this.checkingAnyChange();
     }
 
+     /** Start interval to check page changes */
     checkingAnyChange(self) {
         setStoppableInterval(() => {
-
             this.checkCharacterWithEnemies();
             this.checkCharacterWithEndBoss();
             this.checkCharacterWithCollectable(this.level.coins, this.imageTextBarCoin);
@@ -123,20 +131,21 @@ class World {
         }, 100);
     }
 
+    /** Check if character hit chicken */
     checkCharacterWithEnemies() {
         for (let index = 0; index < this.level.enemies.length; index++) {
             const enemy = this.level.enemies[index];
             if (this.character.isColliding(enemy) && this.character.isFallingUpon(enemy)) {
                 enemy.audioPlay(enemy.AUDIO_HURT);
                 this.removeEnemy(enemy);
-                this.character.jump(10);
-                
+                this.character.jump(10); 
             } else if( this.character.isColliding(enemy) && enemy.energy){
                 this.setCharacterEnery(enemy.damage);
             }
         }
     }
 
+    /** Check if character hit endboss */
     checkCharacterWithEndBoss() {
         if (this.character.isColliding(this.level.endBoss)) {
             this.level.endBoss.isAttacking = true;
@@ -144,12 +153,13 @@ class World {
         }
     }
 
-
+     /** When character hit, it will take damage, statusbar will also change */
     setCharacterEnery(damage){
         this.character.hit(damage);
         this.statusBar.setPercentage(this.character.energy);
     }
 
+    /** Set endboss energy */
     setEndBossEnergy(damage, currentBottle){
         if (this.level.endBoss.lastBottle != currentBottle) {
             this.level.endBoss.hit(damage);
@@ -158,6 +168,7 @@ class World {
         this.endBossStatusBar.setPercentage(this.level.endBoss.energy);
     }
 
+    /** Check if character hit bottles on ground or coins */
     checkCharacterWithCollectable(arr, imgTextBar) {
         for (let index = 0; index < arr.length; index++) {
             const collectable = arr[index];
@@ -177,6 +188,7 @@ class World {
         }
     }
 
+    /** When character clicks J */
     characterShoot() {
         this.character.shooting();
         if(this.colltedBottleCount <= 0) return;
@@ -187,6 +199,7 @@ class World {
         this.playBottleAnimation();
     }
 
+    /** Show bottle on canvas */
     playBottleAnimation(){
         let speedDirection = 1;
         let x = this.character.x + this.character.w - this.character.offset.right;
@@ -199,6 +212,7 @@ class World {
         this.throwableObjects.push(bottole);
     }
     
+    /** Check if bottle hits chicken */
     checkThrowObjectWithEnemies() {
         for (let i = 0; i < this.throwableObjects.length; i++) {
             const bottle = this.throwableObjects[i];
@@ -214,6 +228,7 @@ class World {
         }
     }
 
+    /** Check if bottle hits endboss */
     checkThrowObjectWithEndBoss() {
         for (let i = 0; i < this.throwableObjects.length; i++) {
             const bottle = this.throwableObjects[i];
@@ -226,6 +241,7 @@ class World {
         }
     }
 
+    /** Check if bottle hits ground */
     checkThrowableObjectWithGround() {
         for (let index = 0; index < this.throwableObjects.length; index++) {
             let bottle = this.throwableObjects[index];
@@ -236,6 +252,7 @@ class World {
         }
     }
 
+     /**  Remove enemies from canvas */
     removeEnemy(enemy) {
         enemy.energy = 0;
 
@@ -246,11 +263,15 @@ class World {
         setRemoveFromArraryTimeout310(() => this.level.enemies = this.level.enemies.filter(e => !this.enemiesToRemove.includes(e)));
     }
 
+    /**  Remove bottole from canvas */
     removeBottles(bottle) {
         bottle.enemyTouche();
         bottle.speed = 0;
-        setPushToArrayTimeout300(() => this.bottlesToRemove.push(bottle));
+
+        setPushToArrayTimeout300(() => {
+            bottle.destroySelf();
+            this.bottlesToRemove.push(bottle);
+        });
         setRemoveFromArraryTimeout310(() => this.throwableObjects = this.throwableObjects.filter(b => !this.bottlesToRemove.includes(b)));
     }
- 
 }

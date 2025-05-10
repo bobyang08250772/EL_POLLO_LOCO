@@ -16,9 +16,9 @@ class GroundBottle extends Collectable {
     ];
 
 
+    /** GroundBottle constructor */
     constructor() {
         let r = getRandomNum(0, 2);
-
         super().loadImage(this.IMAGES[r]);
         this.x = getRandomNum(100, LEVEL_1_END_X);
     }

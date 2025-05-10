@@ -73,17 +73,7 @@ h1 {
     font-size: 2rem;
 }
 
-.canvas-screen-top .time.normal {
-    color: rgba(0, 0, 0);
-}
 
-.canvas-screen-top .time.warining {
-    color: rgba(230, 142, 60);
-}
-
-.canvas-screen-top .time.urgent {
-    color: rgb(210, 81, 81);
-}
 
 
 .canvas-screen-bottom {
@@ -158,16 +148,19 @@ canvas {
 }
 
 .lost-end-screen {
+    gap: 40px;
     background: center / 70% 70% no-repeat url("img/You won, you lost/You lost.png");
 }
 
 .won-end-screen {
+    gap: 40px;
     background: center / 80% 80% no-repeat url("img/You won, you lost/You Win A.png");
 }
 
-.confirm-screen {
-
+.lost-end-screen > button, .won-end-screen > button {
+    position: static;
 }
+
 
 .confirm-screen-box {
     gap: 20px;
@@ -190,15 +183,7 @@ canvas {
     position: static;
 }
 
-.confirm-overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    
-}
+
 
 #quit-btn {
     background-color: rgb(210, 81, 81);

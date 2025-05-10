@@ -9,6 +9,7 @@ class ImageTextBarCoin extends ImageTextBar{
         bottom: 70
     }
 
+    /** ImageTextBarCoin constructor */
     constructor(x, y, w, h, path) {
         super(x, y, w, h, path);
         //ctx.arc(this.x + 100 , this.y + 54, this.radius, 0, 2 * Math.PI, false);

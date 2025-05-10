@@ -15,6 +15,7 @@ let rotateScreen = document.getElementById("rotate-screen");
 let lostEndScreen = document.getElementById("lost-end-screen");
 let wonEndScreen = document.getElementById("won-end-screen");
 let confirmScreen = document.getElementById("confirm-screen");
+let canvasScreenBottom = document.getElementById("canvas-screen-bottom");
 
 let storyP = document.getElementById("story-p");
 let skipBtn = document.getElementById("skip-btn");
@@ -26,17 +27,48 @@ let lastAudio;
 let audioUnlocked = false;
 const mouseEnterHandlers = new Map(); 
 
+
+/** Init Page */
 function init() {
-    
+    checkifMusicIsUnlocked();
     addButtonHoverEventListener();
     if (window.innerHeight > window.innerWidth && isSmallScreen()) {
         showScreen(rotateScreen);
     } else {
         checkIfGameStarted();
     }
+    if (isSmallScreen() || isMobileDevice()) {
+        canvasScreenBottom.style.display = "flex";
+    } else {
+        canvasScreenBottom.style.display = "none";
+    }
+    
 }
 
 
+/** Check music */
+function checkifMusicIsUnlocked() {
+    let musicState = localStorage.getItem("audioUnlocked");
+    if(musicState) {
+        audioUnlocked = musicState == "false" ? false : true;
+    } else {
+        audioUnlocked = false;
+    }
+
+    if(audioUnlocked) {
+        soundImgs.forEach(soundImg => {
+            soundImg.src = "img/10_controls/sound-on.png";
+        });
+    } else {
+        soundImgs.forEach(soundImg => {
+            soundImg.src = "img/10_controls/sound-off.png";
+        });
+    }
+}
+
+
+
+/** Show one screen with param of current screen */
 function showScreen(currentScreen) {
     document.querySelectorAll(".game-screen").forEach(screen => {
         screen.classList.add("d-none");
@@ -49,11 +81,12 @@ function showScreen(currentScreen) {
 }
 
 
+/** Go to control screen */
 function goToControlScreen(){
     showScreen(controlScreen);
 }
 
-
+/** Go to background story screen */
 function goToBgstoryScreen(){
     showScreen(storyScreen);
 
@@ -67,6 +100,14 @@ function goToBgstoryScreen(){
 }
 
 
+/** When user click go back from story scren */
+function storyScreenGoBack() {
+    clearInterval(typingIntervalId);
+    goBackToStartScreen();
+}
+
+
+/** When user clicks skip */
 function skipTyping() {
     isSkipping = true;
     setTimeout(() => {
@@ -75,6 +116,7 @@ function skipTyping() {
 }
 
 
+/** Type each character of a line with optional onComplete callback */
 function typeLine(line, onComplete) {
     charIndex = 0;
     storyP.textContent = '';
@@ -83,6 +125,7 @@ function typeLine(line, onComplete) {
 }
 
 
+/** Type each character of a line with optional onComplete callback */
 function setTypingInterval(line, onComplete) {
     return setInterval(() => {
         if (isSkipping) {
@@ -102,6 +145,7 @@ function setTypingInterval(line, onComplete) {
 }
 
 
+/** Set interval to type characters one by one */
 function startStoryTelling() {
     function showNextLine() {
         if (storyLineId >= STORYLINES.length) {
@@ -118,32 +162,26 @@ function startStoryTelling() {
 }
 
 
-
+/** Go back to the start screen and stop everything */
 function goBackToStartScreen() {
-    gameIsStarted = false;
-    gameIsPaused = false;
-    stopBgMusic();
-    intervalIDs.forEach(clearInterval);
-    if(typingIntervalId) clearInterval(typingIntervalId);
-
     showScreen(startScreen);
 }
 
 
+/** Set loading button text with percentage and message */
 function setLoadingBtnText(loadingPercentage, loadingText) {
     loadingBtn.innerText = `${loadingText} are loading ... ${loadingPercentage}%`;
 }
 
 
+/** Stop background music */
 function stopBgMusic() {
-       
-
     ASSERTS["audios"][AUDIO_BG_MUSIC].pause();
-    ASSERTS["audios"][AUDIO_BG_MUSIC].currenTime = 0;
-       
+    ASSERTS["audios"][AUDIO_BG_MUSIC].currenTime = 0; 
 }
 
 
+/** Mute all audio elements */
 function muteAllAudios() {
     AUDIOS.forEach(a => {
         a.muted = true;
@@ -151,6 +189,7 @@ function muteAllAudios() {
 }
 
 
+/** Unmute all audio elements */
 function unMuteAllAudios() {
     AUDIOS.forEach(a => {
         a.muted = false;
@@ -158,15 +197,19 @@ function unMuteAllAudios() {
 }
 
 
+/** Toggle sound on or off */
 function enableSound() {
     if (!audioUnlocked) {
+        localStorage.setItem("audioUnlocked", true);
         audioUnlocked = true;
         soundImgs.forEach(soundImg => {
             soundImg.src = "img/10_controls/sound-on.png";
         });
         unMuteAllAudios();
+
     } else {
         audioUnlocked = false;
+        localStorage.setItem("audioUnlocked", false);
         soundImgs.forEach(soundImg => {
             soundImg.src = "img/10_controls/sound-off.png";
         });
@@ -175,6 +218,7 @@ function enableSound() {
 }
 
 
+/** Add hover sound effect listeners to all sound buttons */
 function addButtonHoverEventListener() {
     const btns = document.querySelectorAll(".sound-btn");
     btns.forEach(btn => {
@@ -183,6 +227,7 @@ function addButtonHoverEventListener() {
 }
 
 
+/** Create a mouseenter handler for a button */
 function createMouseEnterHandler(btn) {
     return function mouseEnterHandler() {
         if (!audioUnlocked) return;
@@ -194,6 +239,7 @@ function createMouseEnterHandler(btn) {
 }
 
 
+/** Add mouseenter audio listener to a button */
 function addButtonMouseEnter(btn) {
     const handler = createMouseEnterHandler(btn);
     mouseEnterHandlers.set(btn, handler);
@@ -201,12 +247,14 @@ function addButtonMouseEnter(btn) {
 }
 
 
+/** Remove mouseenter audio listener from a button */
 function removeButtonMouseEnter(btn) {
     const handler = mouseEnterHandlers.get(btn, handler);
     btn.removeEventListener("mouseenter", handler);
 }
 
 
+/** Create and play button click audio */
 function createButtionClickAudio(){
     const bAudio = new Audio(BUTTON_AUDIO_PATH);
     AUDIOS.push(bAudio);

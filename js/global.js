@@ -21,7 +21,7 @@ const SMALL_CHICKEN_NUM = 10;
 const CLOUD_NUM = 10;
 const BACKGROUND_NUM = 6;
 const COIN_NUM = 10;
-const GROUNDBOTTLE_NUM = 15;
+const GROUNDBOTTLE_NUM = 10;
 
 // LEVEL
 let LEVEL1 = null;
