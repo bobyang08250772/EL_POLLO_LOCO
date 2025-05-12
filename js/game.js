@@ -1,58 +1,31 @@
-let canvas;
-let world;
-let kb;
-let gameIsPaused = false;
-let assertIsLoaded = false;
-let gameTimerIntervalId;
-let gameTimer = GAME_TIME;
-let bgMusicAudio;
-const intervalIDs = [];
-const allAudios = [];
-
 
 /** Change pauseBtn Img */
 function disableInGameBtns() {
     pauseImg.src = "img/10_controls/continue.png";
 }
 
+
 /** Change pauseBtn Img */
 function enableInGameBtns() {
     pauseImg.src = "img/10_controls/pause.png";
 }
 
-/** Mute all sound and change sound image */
-function soundOff(){
-    soundImgs.forEach(soundImg => {
-        soundImg.src = "img/10_controls/sound-off.png";
-    });
-    muteAllAudios();
-}
-
-/**  Mute all sound and change sound image */
-function soundOn() {
-    if(audioUnlocked) {
-        unMuteAllAudios();
-        soundImgs.forEach(soundImg => {
-            soundImg.src = "img/10_controls/sound-on.png";
-        });
-    }
-}
 
 /** User click Pause Game */
 function pauseGame(){
     if(!gameIsPaused) {
         gameIsPaused = true;
         disableInGameBtns();
-        // soundOff();
     } else {
         gameIsPaused = false;
         enableInGameBtns();
-        // soundOn();
     } 
 }
 
 
-/** When games stops */
+/** When games stops 
+ * @param {boolean} isWon if won, true, or eles false
+*/
 function stopGame(isWon) {
     intervalIDs.forEach(clearInterval);
     bgMusicAudio.pause();
@@ -139,36 +112,11 @@ function startLoading() {
     });
 }
 
-/** Start game timer for 60 seconds */
-function startGameTimer() {
-    setStoppableInterval(() => {
-        if (gameIsPaused || gameTimer <= 0) return;
-        gameTimer --;
-        gameTimerDiv.innerText = gameTimer;
-        if(gameTimer <= 10) {
-            gameTimerDiv.style.color = TIMER_URGENT;
-            bgMusicAudio.playbackRate = 2;
-        } else if(gameTimer <= 30) {
-            gameTimerDiv.style.color = TIMER_WARNING;
-            bgMusicAudio.playbackRate = 1.5;
-        } else {
-            gameTimerDiv.style.color = TIMER_NOMRAL;
-        }
-    }, 1000);
-}
-
-
-/** Init game timer  */
-function initGameTimer() {
-    gameTimer = GAME_TIME;
-    gameTimerDiv.innerText = GAME_TIME;
-    gameTimerDiv.style.color = TIMER_NOMRAL;
-    startGameTimer();
-}
-
 
 /** When game starts */
 function startGame() { 
+    cancelAnimationFrame(currentAnimationFrameID);
+    intervalIDs.forEach(clearInterval);
     gameIsStarted = true;
     gameIsPaused = false;
     enableInGameBtns();
@@ -176,7 +124,6 @@ function startGame() {
     initGameElements();
     initLevel();
     initCanvasAndKeyBoard();
-    initGameTimer();
     initBgMusic();
 }
 
@@ -205,6 +152,7 @@ function initGameElements() {
 
     addEnemies();
     createEndBoss();
+    addSmallChickenAroundBoss();
     addClouds();
     addBgs();
     addCoins();
@@ -237,7 +185,9 @@ function initCanvasAndKeyBoard() {
 }
 
 
-/** On touchstart  */
+/** On touchstart  
+ * @param {HTMLELEmentEvent} event current event triggered
+*/
 function onTouchStart(event){
     const btn = event.currentTarget;
     if(btn.id == "mobile-left") {

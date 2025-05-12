@@ -20,7 +20,10 @@ class World {
     isCollected = false;
     colltedBottleCount = 0;
 
-    /** World constructor */
+    /** World constructor 
+     * @param {HTMLCanvasElement} canvas - The HTML canvas element where the game is rendered.
+     * @param {Object} kb - The keyboard input handler object used
+    */
     constructor(canvas, kb) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
@@ -50,8 +53,9 @@ class World {
     /** Add all objects to map */
     drawAllObject() {
         this.addObjectsToMap(this.level.backgroundObjects);
-        this.addToMap(this.character);
+        
         this.addObjectsToMap(this.level.clouds);
+        this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addToMap(this.level.endBoss);
         this.addObjectsToMap(this.level.coins);
@@ -62,7 +66,7 @@ class World {
     
     /** Request animation frame */
     requrestAnimation() {
-        requestAnimationFrame(()=> {
+        currentAnimationFrameID = requestAnimationFrame(()=> {
             this.draw();
         });
     }
@@ -79,14 +83,18 @@ class World {
 
     }
 
-    /** In this function, add to map will be called */
+    /** In this function, add to map will be called 
+     * @param {Array} objects all object to be drawn
+    */
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         });    
     }
 
-    /** In this function, draw function will be called */
+    /** In this function, draw function will be called 
+     * * @param {Object} mo one object to be drawn
+    */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
@@ -99,7 +107,9 @@ class World {
         }
     }
 
-    /** In this function, canvas will be flipped */
+    /** In this function, canvas will be flipped 
+     *   @param {Object} mo one object to be flipped
+    */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.w, 0);
@@ -107,7 +117,9 @@ class World {
         mo.x = mo.x * -1;
     }
 
-     /** In this function, canvas will be flipped back */
+     /** In this function, canvas will be flipped back 
+      * @param {Object} mo one object to be flipped back
+     */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
@@ -119,7 +131,7 @@ class World {
     }
 
      /** Start interval to check page changes */
-    checkingAnyChange(self) {
+    checkingAnyChange() {
         setStoppableInterval(() => {
             this.checkCharacterWithEnemies();
             this.checkCharacterWithEndBoss();
@@ -138,8 +150,10 @@ class World {
             if (this.character.isColliding(enemy) && this.character.isFallingUpon(enemy)) {
                 enemy.audioPlay(enemy.AUDIO_HURT);
                 this.removeEnemy(enemy);
-                this.character.jump(10); 
-            } else if( this.character.isColliding(enemy) && enemy.energy){
+                enemy.damage = 0;
+                this.character.jump(10);     
+
+            } else if( this.character.isColliding(enemy) && enemy.damage){
                 this.setCharacterEnery(enemy.damage);
             }
         }
@@ -153,22 +167,27 @@ class World {
         }
     }
 
-     /** When character hit, it will take damage, statusbar will also change */
+     /** When character hit 
+      * @param {Nummber} damage it will take damage, statusbar will also change 
+     */
     setCharacterEnery(damage){
         this.character.hit(damage);
         this.statusBar.setPercentage(this.character.energy);
     }
 
-    /** Set endboss energy */
-    setEndBossEnergy(damage, currentBottle){
-        if (this.level.endBoss.lastBottle != currentBottle) {
-            this.level.endBoss.hit(damage);
-            this.level.endBoss.lastBottle = currentBottle;
-        }
+    /** Set endboss energy 
+     *  * @param {Nummber} damage it will take damage, statusbar will also change 
+    */
+    setEndBossEnergy(damage){
+        this.level.endBoss.takeDamage(damage);
         this.endBossStatusBar.setPercentage(this.level.endBoss.energy);
     }
-
-    /** Check if character hit bottles on ground or coins */
+       
+    
+    /** Check if character hit bottles on ground or coins 
+     * @param {Array} arr bottle array
+     * @param {ImageTextBar} arr which text will change
+    */
     checkCharacterWithCollectable(arr, imgTextBar) {
         for (let index = 0; index < arr.length; index++) {
             const collectable = arr[index];
@@ -232,8 +251,8 @@ class World {
     checkThrowObjectWithEndBoss() {
         for (let i = 0; i < this.throwableObjects.length; i++) {
             const bottle = this.throwableObjects[i];
-             
             if (bottle.isColliding(this.level.endBoss)) {
+                
                 this.level.endBoss.audioPlay(this.level.endBoss.AUDIO_HURT);
                 this.removeBottles(bottle);
                 this.setEndBossEnergy(bottle.damage, bottle);
@@ -252,7 +271,9 @@ class World {
         }
     }
 
-     /**  Remove enemies from canvas */
+     /**  Remove enemies from canvas 
+      * @param {Array} enemy enemies to be removed
+     */
     removeEnemy(enemy) {
         enemy.energy = 0;
 
@@ -263,7 +284,9 @@ class World {
         setRemoveFromArraryTimeout310(() => this.level.enemies = this.level.enemies.filter(e => !this.enemiesToRemove.includes(e)));
     }
 
-    /**  Remove bottole from canvas */
+    /**  Remove bottole from canvas
+     *  @param {ThrowableObject} bottle bottles to be removed
+     */
     removeBottles(bottle) {
         bottle.enemyTouche();
         bottle.speed = 0;

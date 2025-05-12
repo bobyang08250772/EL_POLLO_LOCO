@@ -6,8 +6,8 @@ class  ImageTextBar extends DrawableObject{
     circleX = 0;
     circleY = 0;
 
-    textX1 = 0; // one digit
-    textX2 = 0; // two digits
+    textX1 = 0;
+    textX2 = 0;
     textY = 0;
 
     jumpCount = 0;
@@ -18,7 +18,13 @@ class  ImageTextBar extends DrawableObject{
     originalY = 93;
     jumpY = 85;
 
-
+    /** ImageTextBar constructor 
+     * @param {Nummber} x x value
+     * @param {Nummber} y y value
+     * @param {Nummber} w width value
+     * @param {Nummber} h height value
+     * @param {String} path url 
+    */
     constructor(x, y, w, h, path) {
         super();
         this.x = x;
@@ -26,12 +32,11 @@ class  ImageTextBar extends DrawableObject{
         this.w = w;
         this.h = h;
         this.loadImage(path);
-
-
-        // this.jump();
     }
 
-
+    /** Draw ImageTextBar 
+     * @param {CanvasRenderingContext2D} ctx context of canvaes
+    */
     draw(ctx) {
         try {
             ctx.save();
@@ -46,6 +51,9 @@ class  ImageTextBar extends DrawableObject{
         }
     }
 
+    /** Draw Cirle
+     * @param {CanvasRenderingContext2D} ctx context of canvaes
+     */
     drawCirle(ctx) {
         ctx.beginPath();
         ctx.arc(this.circleX , this.circleY, this.radius, 0, 2 * Math.PI, false);
@@ -54,6 +62,9 @@ class  ImageTextBar extends DrawableObject{
         ctx.stroke();
     }
 
+    /** Draw text in the cirle 
+     * @param {CanvasRenderingContext2D} ctx context of canvaes
+    */
     drawText(ctx) {
         let textX = this.textX2;
         let textString = this.text.toString();
@@ -64,6 +75,7 @@ class  ImageTextBar extends DrawableObject{
         ctx.fillText(textString, textX, this.textY);
     }
 
+    /** When collcted, it should jump */
     jump() {
         this.clearLastJump();
         this.lastJumpIntervalId = setStoppableInterval(()=>{
@@ -82,6 +94,7 @@ class  ImageTextBar extends DrawableObject{
         
     }
 
+    /** After jumping goes back to the original position */
     clearLastJump() {
         this.jumpCount = 0;
         if(this.lastJumpIntervalId) {

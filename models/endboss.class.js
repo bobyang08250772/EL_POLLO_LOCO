@@ -1,18 +1,18 @@
 class EndBoss extends CoolidableObject {
-    x = LEVEL_1_END_X + 300;
-    // x = 400;
+    x = LEVEL_1_END_X + 400;
     y = 90;
     h = 350;
     w = 220;
     
     world;
 
-    speed = 5;
+    speed = 4;
     damage = 100;
     alertCount = 999;
 
     isAlert = false;
     isAttacking = false;
+    canTakeDamage = true;
 
     offset = {
         top: 100,
@@ -66,6 +66,7 @@ class EndBoss extends CoolidableObject {
     AUDIO_DEAD = ASSERTS["audios"]["audio/boss_dead.mp3"];
     AUDIO_SPAWNING = ASSERTS["audios"]["audio/boss_intro_sound.mp3"];
 
+    /** End boss constructor */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
@@ -76,8 +77,8 @@ class EndBoss extends CoolidableObject {
         this.animate();
     }
 
+    /** End boss constructor */
     animate() {
-
         setStoppableInterval(()=>{
             this.moveCharacter();
         }, 1000/60);
@@ -87,6 +88,7 @@ class EndBoss extends CoolidableObject {
         }, 100);
     }
 
+    /** Move endBoss */
     moveCharacter() {
         if (gameIsPaused) return;
         if (this.canMoveLeft()) {
@@ -94,24 +96,17 @@ class EndBoss extends CoolidableObject {
         }
     }
     
+    /** Set endBoss in motion */
     animateCharacter() {
         if (gameIsPaused) return;
         if (this.alertCount < 16) {
             this.playAnimation(this.IMAGES_ALERT);
             this.audioPlay(this.AUDIO_SPAWNING);
         } else {
-            
-            
-            if(this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT);
-            } else if(this.isAttacking) {
+            if(!this.canTakeDamage) {
                 this.playAnimation(this.IMAGES_ATTACKING);
             } else if(this.isDead()){
-                this.audioPlay(this.AUDIO_DEAD);
-                this.playAnimation(this.IMAGES_DEAD);
-                setTimeout(() => {
-                    stopGame(true);
-                }, 1000);
+                handleDead();
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
             }
@@ -119,6 +114,16 @@ class EndBoss extends CoolidableObject {
         this.setAlertStatus();
     }
 
+    /** the end boss is dead */
+    handleDead() {
+        this.audioPlay(this.AUDIO_DEAD);
+        this.playAnimation(this.IMAGES_DEAD);
+        setTimeout(() => {
+            stopGame(true);
+        }, 1000);
+    }
+
+    /** When endboss is alert */
     setAlertStatus() {
         this.alertCount ++; 
         if(this.world) {
@@ -131,10 +136,31 @@ class EndBoss extends CoolidableObject {
         }
     }
 
+     /** Check if Endboss can move left */
     canMoveLeft() {
         return this.alertCount > 16 && this.isAlert && !this.isDead() && !gameIsPaused;
     }
 
-   
+    /**
+     * when endboss is hit
+     * @param {Nummber} damage how much damage
+     * @returns 
+     */
+    takeDamage(damage) {
+        if (!this.canTakeDamage) return;
+
+        this.energy -= damage;
+        this.canTakeDamage = false;
+
+        if(this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = getTimestamp();
+        }
+
+        setTimeout(() => {
+            this.canTakeDamage = true;
+        }, 1500); 
+    }
 
 }

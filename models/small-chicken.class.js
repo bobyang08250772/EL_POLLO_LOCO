@@ -1,18 +1,18 @@
 class SmallChicken extends CoolidableObject {
     y = 385;
     originY = 385;
-    h = 50;
-    w = 50;
-    damage = 2;
+    h = 60;
+    w = 60;
+    damage = 3;
     energy = 100;
     speed = 1;
     
 
     offset = {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
+        top: 10,
+        left: 10,
+        right: 10,
+        bottom: 10  
     }
 
     IMAGES_WALKING =  [
@@ -28,20 +28,26 @@ class SmallChicken extends CoolidableObject {
 
     AUDIO_HURT = ASSERTS["audios"]["audio/small_chicken_hurt.wav"];
 
-     /** Smallchicken constructor */
-    constructor() {
+     /** Smallchicken constructor 
+      * @param {String} name chicken name
+      * @param {Nummber} x x value
+      * @param {Nummber} speed chicken speed
+     */
+    constructor(name, x, speed) {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
 
-        this.x = getRandomNum(960, LEVEL_1_END_X + 720);
-        this.speed = getRandomNumFloat(0.15, 1);
+        this.x = x;
+        this.speed = speed;
+        this.name = name;
         this.animate();
         this.applyGravity();
     }
 
     /** Set Smallchicken in motion */
     animate() {
+        
         setStoppableInterval(() => {
             if (gameIsPaused) return;
             this.moveLeft();
@@ -67,7 +73,7 @@ class SmallChicken extends CoolidableObject {
 
     /** Smallchicken jumps */
     jump() {
-        this.speedY = 20;
+        this.speedY = 15;
     }
 
     /** Check if smallchicken is above ground */

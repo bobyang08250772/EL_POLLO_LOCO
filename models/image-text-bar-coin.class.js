@@ -9,10 +9,15 @@ class ImageTextBarCoin extends ImageTextBar{
         bottom: 70
     }
 
-    /** ImageTextBarCoin constructor */
+    /** ImageTextBarCoin constructor 
+     * @param {Nummber} x x value
+     * @param {Nummber} y y value
+     * @param {Nummber} w width value
+     * @param {Nummber} h height value
+     * @param {String} path url 
+    */
     constructor(x, y, w, h, path) {
         super(x, y, w, h, path);
-        //ctx.arc(this.x + 100 , this.y + 54, this.radius, 0, 2 * Math.PI, false);
         this.circleX = this.x + 100;
         this.circleY = this.y + 54;
 

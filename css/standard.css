@@ -5,6 +5,10 @@
 
 }
 
+html, body {
+    touch-action: manipulation;
+}
+
 button {
     border: none;
 }

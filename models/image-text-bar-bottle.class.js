@@ -7,6 +7,13 @@ class ImageTextBarBottle extends ImageTextBar{
         bottom: 40
     }
 
+    /** ImageTextBarBottle constructor 
+     * @param {Nummber} x x value
+     * @param {Nummber} y y value
+     * @param {Nummber} w width value
+     * @param {Nummber} h height value
+     * @param {String} path url 
+    */
     constructor(x, y, w, h, path) {
         super(x, y, w, h, path);
 

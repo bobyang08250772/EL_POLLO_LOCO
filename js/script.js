@@ -1,33 +1,3 @@
-
-
-const loadingBtn = document.getElementById("loading-btn");
-const gameTimerDiv = document.getElementById("game-timer");
-let startScreen = document.getElementById("start-screen");
-let soundImgs = document.querySelectorAll(".sound-img");
-let pauseImg = document.getElementById("pause-img");
-let pauseBtnInGame = document.getElementById("pause-btn-in-game");
-let soundBtnInGame = document.getElementById("sound-btn-in-game");
-let controlScreen = document.getElementById("control-screen");
-let loadingScreen = document.getElementById("loading-screen");
-let storyScreen = document.getElementById("story-screen");
-let canvasScreen = document.getElementById("canvas-screen");
-let rotateScreen = document.getElementById("rotate-screen");
-let lostEndScreen = document.getElementById("lost-end-screen");
-let wonEndScreen = document.getElementById("won-end-screen");
-let confirmScreen = document.getElementById("confirm-screen");
-let canvasScreenBottom = document.getElementById("canvas-screen-bottom");
-
-let storyP = document.getElementById("story-p");
-let skipBtn = document.getElementById("skip-btn");
-let storyLineId = 0;
-let charIndex = 0;
-let typingIntervalId;
-let isSkipping = false;
-let lastAudio;
-let audioUnlocked = false;
-const mouseEnterHandlers = new Map(); 
-
-
 /** Init Page */
 function init() {
     checkifMusicIsUnlocked();
@@ -55,6 +25,7 @@ function checkifMusicIsUnlocked() {
         audioUnlocked = false;
     }
 
+    TYPING_AUTIO.muted = audioUnlocked ? false : true;
     if(audioUnlocked) {
         soundImgs.forEach(soundImg => {
             soundImg.src = "img/10_controls/sound-on.png";
@@ -68,7 +39,9 @@ function checkifMusicIsUnlocked() {
 
 
 
-/** Show one screen with param of current screen */
+/** Show one screen with param of current screen 
+ * @param {HTMLElement} currentScreen current div
+*/
 function showScreen(currentScreen) {
     document.querySelectorAll(".game-screen").forEach(screen => {
         screen.classList.add("d-none");
@@ -116,7 +89,10 @@ function skipTyping() {
 }
 
 
-/** Type each character of a line with optional onComplete callback */
+/** Type each character of a line with optional onComplete callback 
+ *  @param {String} line which line should be shown
+ * @param {Function} onComplete which function should be called
+*/
 function typeLine(line, onComplete) {
     charIndex = 0;
     storyP.textContent = '';
@@ -125,7 +101,10 @@ function typeLine(line, onComplete) {
 }
 
 
-/** Type each character of a line with optional onComplete callback */
+/** Type each character of a line with optional onComplete callback 
+ * @param {String} line which line should be shown
+ * @param {Function} onComplete which function should be called
+*/
 function setTypingInterval(line, onComplete) {
     return setInterval(() => {
         if (isSkipping) {
@@ -168,7 +147,10 @@ function goBackToStartScreen() {
 }
 
 
-/** Set loading button text with percentage and message */
+/** Set loading button text with percentage and message 
+ * @param {Number} loadingPercentage pertange nummber
+ * @param {String} loadingText showed text 
+*/
 function setLoadingBtnText(loadingPercentage, loadingText) {
     loadingBtn.innerText = `${loadingText} are loading ... ${loadingPercentage}%`;
 }
@@ -239,7 +221,9 @@ function createMouseEnterHandler(btn) {
 }
 
 
-/** Add mouseenter audio listener to a button */
+/** Add mouseenter audio listener to a button 
+ * @param {HTMLElement} btn button
+*/
 function addButtonMouseEnter(btn) {
     const handler = createMouseEnterHandler(btn);
     mouseEnterHandlers.set(btn, handler);
@@ -247,7 +231,9 @@ function addButtonMouseEnter(btn) {
 }
 
 
-/** Remove mouseenter audio listener from a button */
+/** Remove mouseenter audio listener from a button 
+ *  @param {HTMLElement} btn button
+*/
 function removeButtonMouseEnter(btn) {
     const handler = mouseEnterHandlers.get(btn, handler);
     btn.removeEventListener("mouseenter", handler);

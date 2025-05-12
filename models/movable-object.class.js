@@ -1,11 +1,8 @@
 class MovableObject extends DrawableObject{
-    
     speed = 0.15;
     otherDirection = false;
-
     speedY = 0;
     acceleration = 2;
-    
     lastHit = 0;
 
     /** ImageTextBar constructor */
@@ -16,15 +13,11 @@ class MovableObject extends DrawableObject{
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
             } else {
-                
                 this.speedY = 0;
                 this.y = this.groundY;
             }
         }, 1000 / 25);
     }
-
-    /** Check if movable object is above ground */
-    isAboveGround() {}
 
     /** Check if movable object can move left  */
     moveRight() {
@@ -35,8 +28,4 @@ class MovableObject extends DrawableObject{
     moveLeft() {
         this.x -= this.speed;
     }
-    
-   
-
-    
 }

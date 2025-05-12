@@ -1,13 +1,4 @@
 
-const fullScreenDiv = document.getElementById("fullscreen");
-const canvas_script = document.getElementById("canvas");
-const fullScreenImg = document.getElementById("full-screen-img");
-const legalNoticeBtn = document.getElementById("legal-notice-btn");
-let lastShowedScreen =  document.getElementById("start-screen");;
-
-let fullScreenIsOn = false;
-let gameIsStarted = false;
-
 
 /** Check current orientation mode */
 function checkOrientation() {
@@ -24,7 +15,7 @@ function checkOrientation() {
 
 /** If the ismobile Device */
 function isMobileDevice() {
-    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 }
 
 
@@ -35,7 +26,12 @@ function isSmallScreen() {
 
 
 /** When user resizes the screen */
-window.addEventListener("resize", ()=>{
+window.addEventListener("orientationchange", onSizeChange); 
+window.addEventListener("resize", onSizeChange); 
+
+
+/** If any size change, this function will be called */
+function onSizeChange() {
     if (window.matchMedia("(orientation: landscape)").matches) {
         checkIfGameStarted();
     } else {
@@ -45,13 +41,22 @@ window.addEventListener("resize", ()=>{
             checkIfGameStarted();
         }
     }
-
+    
     if (isSmallScreen() || isMobileDevice()) {
+        preventContextMenu();
         canvasScreenBottom.style.display = "flex";
     } else {
         canvasScreenBottom.style.display = "none";
     }
-}); 
+}
+
+
+/** Stop context menu from popping */
+function preventContextMenu() {
+    window.addEventListener("contextmenu", function(e) {
+        e.preventDefault();
+    });
+}
 
 
 /** Check if Game started already */

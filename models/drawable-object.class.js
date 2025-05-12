@@ -42,9 +42,11 @@ class DrawableObject {
         }
     }
 
-    /** Draw frame of objects if needed */
+    /** Draw frame of objects if needed 
+     * @param {CanvasRenderingContext2D} ctx context of canvas
+    */
     drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Coin || this instanceof ImageTextBar || this instanceof GroundBottle || this instanceof ThrowableObject || this instanceof EndBoss) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Coin || this instanceof ImageTextBar || this instanceof GroundBottle || this instanceof ThrowableObject || this instanceof EndBoss) {
             ctx.beginPath();
             ctx.lineWidth = "5";
             ctx.strokeStyle = "blue";
@@ -55,7 +57,9 @@ class DrawableObject {
         }
     }
 
-    /** Draw frame with offset of objects if needed */
+    /** Draw frame with offset of objects if needed 
+     * @param {CanvasRenderingContext2D} ctx context of canvas
+    */
     drawFrameWithOffset(ctx) {
         ctx.beginPath();
         ctx.lineWidth = "2";
@@ -64,7 +68,9 @@ class DrawableObject {
         ctx.stroke();
     }
 
-    /** Draw shadow of objects if needed */
+    /** Draw shadow of objects if needed 
+     * @param {CanvasRenderingContext2D} ctx context of canvas
+    */
     drawShadow(ctx) {
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 20;
@@ -72,7 +78,9 @@ class DrawableObject {
         ctx.shadowBlur = 20;
     }
 
-    /** Load all images when there are mutiple */
+    /** Load all images when there are mutiple 
+     * @param {Array} arr all image assert array
+    */
     loadImages(arr){
         arr.forEach(path => {
             if (ASSERTS["images"]) {
@@ -81,7 +89,9 @@ class DrawableObject {
         });
     }
 
-    /** Show animation */
+    /** Show animation 
+     * @param {Array} imgs image path array
+    */
     playAnimation(imgs) {
         let i = this.currentImage % imgs.length;
         let path = imgs[i];
@@ -90,7 +100,9 @@ class DrawableObject {
 
     }
 
-    /** Play audio */
+    /** Play audio 
+     * @param {Audio} audioElement which audio should be played
+    */
     audioPlay(audioElement) {
         audioElement.play();
        

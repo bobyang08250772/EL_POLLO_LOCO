@@ -168,10 +168,10 @@ class Character extends CoolidableObject{
 
     /**  Handles death logic and triggers the game over sequence */
     shouldDie() {
-        if (this.isDead() || gameTimer <= 0) {
+        if (this.isDead()) {
             this.audioPlay(this.AUDIO_DEAD);
             this.playAnimation(this.IMAGES_DEAD);
-            setTimeout(() => stopGame(false), 1000); 
+            setTimeout(() => stopGame(false), 500); 
             return true;
         }
         return false;
@@ -228,7 +228,9 @@ class Character extends CoolidableObject{
         }, 100);
     }
 
-    /** Set vertical speed to simulate jumping */
+    /** Set vertical speed to simulate jumping 
+     * @param {Nummber} speedY how fast it should jump
+    */
     jump(speedY) {
         this.speedY = speedY;
     }
@@ -239,8 +241,8 @@ class Character extends CoolidableObject{
     }
 
     /** Detect if falling from above onto another object (mo) */
-    isFallingUpon(mo) {
-        return this.speedY < 0 && this.y + this.h - this.offset.bottom <= mo.y + mo.h - mo.offset.bottom;
+    isFallingUpon() {
+        return this.speedY < 0;
     }
 
     /** Track player idle time for triggering long idle animations */
