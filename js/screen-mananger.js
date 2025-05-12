@@ -121,7 +121,7 @@ function closeFullscreen() {
     }
 }
 
-
+/** After user exit full screen */
 function afterUserExistFullScreen(){
     fullScreenIsOn = false;
     fullScreenImg.src = "img/10_controls/fullscreen_on.png";
