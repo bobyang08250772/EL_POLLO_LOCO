@@ -206,7 +206,9 @@ function onTouchStart(event){
 }
 
 
-/** On touchup */
+/** On touchup  
+ * @param {HTMLELEmentEvent} event current event triggered
+*/
 function onTouchUp(event){
     const btn = event.currentTarget;
 
@@ -248,6 +250,9 @@ function addKeydownEventListener (){
     addEventListener("keydown", onKeyDown);
 }
 
+/** When keydown
+ * @param {HTMLELEmentEvent} event current event
+ */
 function onKeyDown(event) {
     if(kb) {
         switch (event.code) {
@@ -281,6 +286,9 @@ function addKeyUpEventListener (){
     addEventListener("keyup", onKeyUp);
 }
 
+/** When users press key up
+ * @param {HTMLELEmentEvent} event current event
+ */
 function onKeyUp(event){
     if(kb) {
         switch (event.code) {

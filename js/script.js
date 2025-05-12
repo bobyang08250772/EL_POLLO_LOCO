@@ -209,7 +209,9 @@ function addButtonHoverEventListener() {
 }
 
 
-/** Create a mouseenter handler for a button */
+/** Create a mouseenter handler for a button 
+ * @param {HTMLElement} btn current button
+*/
 function createMouseEnterHandler(btn) {
     return function mouseEnterHandler() {
         if (!audioUnlocked) return;
@@ -222,7 +224,7 @@ function createMouseEnterHandler(btn) {
 
 
 /** Add mouseenter audio listener to a button 
- * @param {HTMLElement} btn button
+ * @param {HTMLElement} btn current button
 */
 function addButtonMouseEnter(btn) {
     const handler = createMouseEnterHandler(btn);
